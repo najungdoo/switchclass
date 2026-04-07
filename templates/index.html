@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>수업교체 추천 프로그램</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background: #f7f8fa; }
+    .card { background: white; border-radius: 12px; padding: 20px; max-width: 980px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    h1 { margin-top: 0; }
+    .row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .row label { min-width: 130px; font-weight: 600; }
+    input, select { flex: 1; padding: 8px; }
+    button { padding: 10px 14px; border: none; border-radius: 8px; background: #2f6feb; color: white; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { border: 1px solid #d8dce3; padding: 8px; text-align: left; }
+    th { background: #eef3ff; }
+    .error { color: #cc2f2f; margin-top: 12px; }
+    .hint { color: #666; font-size: 14px; }
+    .ok { color: #2a7b2e; font-size: 14px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>수업교체 추천 프로그램</h1>
+    <p class="hint">기본적으로 <b>{{ default_timetable }}</b> 파일을 자동으로 읽습니다. 필요 시 다른 CSV를 업로드해 덮어쓸 수 있습니다.</p>
+    {% if default_file_exists %}
+      <div class="ok">기본 시간표 파일을 찾았습니다: {{ default_timetable }}</div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+      <div class="row">
+        <label>시간표 CSV(선택)</label>
+        <input type="file" name="timetable" accept=".csv" />
+      </div>
+      <div class="row">
+        <label>요일</label>
+        <select name="day">
+          {% for day in days %}
+          <option value="{{ day }}" {% if form.day == day %}selected{% endif %}>{{ day }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="row">
+        <label>출장 교시</label>
+        <input type="text" name="periods" value="{{ form.periods }}" placeholder="예: 1,2,3" required />
+      </div>
+      <div class="row">
+        <label>출장교사</label>
+        <input type="text" name="absent" value="{{ form.absent }}" placeholder="예: 김진욱,김주혁" required />
+      </div>
+      <button type="submit">대체교사 추천</button>
+    </form>
+
+    {% if error %}
+      <div class="error">오류: {{ error }}</div>
+    {% endif %}
+
+    {% if rows %}
+      <table>
+        <thead>
+          <tr>
+            <th>요일</th><th>교시</th><th>학급</th><th>과목</th><th>출장교사</th><th>대체교사</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td>{{ row.day }}</td>
+            <td>{{ row.period }}</td>
+            <td>{{ row.class }}</td>
+            <td>{{ row.subject }}</td>
+            <td>{{ row.absent_teacher }}</td>
+            <td>{{ row.substitute_teacher }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+</body>
+</html>
