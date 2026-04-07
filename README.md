@@ -5,11 +5,11 @@
 - `schedule_swap.py`: CLI 버전
 - `web_app.py`: 교무실에서 클릭으로 사용할 수 있는 웹 UI 버전
 
-## 1) 시간표 파일 준비
+## 1) 입력 파일 만들기
 
-프로젝트 루트에 `2026_1_timetable.csv` 파일을 두면, CLI/웹 UI 모두 자동으로 해당 파일을 기본 입력으로 사용합니다.
+`sample_timetable.csv` 형식을 참고해 CSV 파일을 준비합니다.
 
-CSV 필수 헤더:
+필수 헤더:
 
 - `teacher`: 교사명
 - `day`: 요일 (`월`,`화`,`수`,`목`,`금`)
@@ -17,17 +17,7 @@ CSV 필수 헤더:
 - `class`: 학급
 - `subject`: 과목
 
-> 참고: 샘플 형식은 `sample_timetable.csv`를 확인하세요.
-
 ## 2) CLI 실행 방법
-
-기본 파일(`2026_1_timetable.csv`)을 사용할 때:
-
-```bash
-python3 schedule_swap.py --day 월 --periods 1,2,3 --absent 김진욱,김주혁
-```
-
-다른 파일을 지정할 때:
 
 ```bash
 python3 schedule_swap.py --csv sample_timetable.csv --day 월 --periods 1,2,3 --absent 김진욱,김주혁
@@ -42,12 +32,11 @@ python3 web_app.py
 
 브라우저에서 `http://localhost:5000` 접속 후,
 
-1. (기본) `2026_1_timetable.csv` 자동 사용
-2. 필요 시 다른 CSV를 선택 업로드
-3. 요일 선택
-4. 출장 교시 입력(예: `1,2,3`)
-5. 출장 교사 입력(예: `김진욱,김주혁`)
-6. **대체교사 추천** 버튼 클릭
+1. 시간표 CSV 업로드
+2. 요일 선택
+3. 출장 교시 입력(예: `1,2,3`)
+4. 출장 교사 입력(예: `김진욱,김주혁`)
+5. **대체교사 추천** 버튼 클릭
 
 ## 4) 추천 로직
 

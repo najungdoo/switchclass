@@ -158,11 +158,7 @@ def render_table(rows: List[Dict[str, str]]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="출장 교사 수업교체 추천 프로그램")
-    parser.add_argument(
-        "--csv",
-        default="2026_1_timetable.csv",
-        help="시간표 CSV 파일 경로 (기본값: 2026_1_timetable.csv)",
-    )
+    parser.add_argument("--csv", required=True, help="시간표 CSV 파일 경로")
     parser.add_argument("--day", required=True, choices=DAYS, help="요일 (월~금)")
     parser.add_argument(
         "--periods",
@@ -180,12 +176,7 @@ def main() -> None:
     periods = [int(p.strip()) for p in args.periods.split(",") if p.strip()]
     absent_teachers = [t.strip() for t in args.absent.split(",") if t.strip()]
 
-    try:
-        timetable = Timetable.from_csv(args.csv)
-    except FileNotFoundError as exc:
-        raise FileNotFoundError(
-            f"시간표 파일을 찾을 수 없습니다: {args.csv}. 경로를 확인하세요."
-        ) from exc
+    timetable = Timetable.from_csv(args.csv)
     engine = SwapEngine(timetable)
     rows = engine.suggest_swaps(absent_teachers, args.day, periods)
     print(render_table(rows))
